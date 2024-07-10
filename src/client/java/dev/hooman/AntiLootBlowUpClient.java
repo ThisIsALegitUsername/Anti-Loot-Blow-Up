@@ -29,7 +29,8 @@ public class AntiLootBlowUpClient implements ClientModInitializer {
 
 		ServerLivingEntityEvents.AFTER_DEATH.register( (entity, source) -> {
 			if(entity instanceof PlayerEntity) {
-				if(mc.player.distanceTo(entity) < 6) {
+                assert mc.player != null;
+                if(mc.player.distanceTo(entity) < 6) {
 					cannotDestroy = true;
 					cooldown = System.currentTimeMillis();
 				}

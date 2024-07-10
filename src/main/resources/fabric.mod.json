@@ -7,17 +7,11 @@
 	"authors": [
 		"hooman"
 	],
-	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
-	},
 	"license": "CC0-1.0",
 	"icon": "assets/anti-loot-blow-up/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"main": [
-			"dev.hooman.AntiLootBlowUp"
-		],
+		"main": [],
 		"client": [
 			"dev.hooman.AntiLootBlowUpClient"
 		]
@@ -31,7 +25,7 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.15.11",
-		"minecraft": "~1.20.1",
+		"minecraft": "~1.20.*",
 		"java": ">=17",
 		"fabric-api": "*"
 	},
