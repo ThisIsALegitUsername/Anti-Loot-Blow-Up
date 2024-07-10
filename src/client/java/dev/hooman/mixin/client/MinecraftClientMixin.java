@@ -1,8 +1,11 @@
 package dev.hooman.mixin.client;
 
 import dev.hooman.AntiLootBlowUpClient;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.RespawnAnchorBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import org.slf4j.LoggerFactory;
@@ -10,10 +13,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(MinecraftClient.class)
-public class MinecraftClientMixin {
+public abstract class MinecraftClientMixin {
 
     @Shadow
     public HitResult crosshairTarget;
@@ -28,6 +32,21 @@ public class MinecraftClientMixin {
             Entity entity = ((EntityHitResult)crosshairTarget).getEntity();
             if(AntiLootBlowUpClient.isCrystal(entity) && AntiLootBlowUpClient.cannotDestroy) {
                 cir.setReturnValue(false);
+            }
+        }
+    }
+
+    @Inject(method = "doItemUse()V", at = @At("HEAD"), cancellable = true)
+    public void antilootblowup$dontBlowAnchor(CallbackInfo ci) {
+        if (crosshairTarget == null) {
+            LoggerFactory.getLogger("anti-loot-blow-up").error("crosshairTarget is null; this shouldn't happen!");
+        }
+
+        BlockHitResult blockHitResult = (BlockHitResult) crosshairTarget;
+        if (crosshairTarget.getType() == HitResult.Type.BLOCK && MinecraftClient.getInstance().world != null) {
+            BlockState blockState = MinecraftClient.getInstance().world.getBlockState(blockHitResult.getBlockPos());
+            if(blockState.getBlock() instanceof RespawnAnchorBlock && blockState.get(RespawnAnchorBlock.CHARGES) > 0 && AntiLootBlowUpClient.cannotDestroy) {
+                ci.cancel();
             }
         }
     }

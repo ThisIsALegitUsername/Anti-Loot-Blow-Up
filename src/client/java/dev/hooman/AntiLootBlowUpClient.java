@@ -15,6 +15,7 @@ public class AntiLootBlowUpClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+
 		ClientTickEvents.START_CLIENT_TICK.register(client -> {
 			if (cannotDestroy && System.currentTimeMillis() - cooldown >= 2000) {
 				cannotDestroy = false;
@@ -23,8 +24,7 @@ public class AntiLootBlowUpClient implements ClientModInitializer {
 
 		ServerLivingEntityEvents.AFTER_DEATH.register( (entity, source) -> {
 			if(entity instanceof PlayerEntity) {
-				// player isnt null, but just do
-                		if(MinecraftClient.getInstance().player != null && MinecraftClient.getInstance().player.distanceTo(entity) < 6) {
+				if(MinecraftClient.getInstance().player != null && MinecraftClient.getInstance().player.distanceTo(entity) < 6) {
 					cannotDestroy = true;
 					cooldown = System.currentTimeMillis();
 				}
