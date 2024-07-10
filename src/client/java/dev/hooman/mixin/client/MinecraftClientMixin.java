@@ -30,7 +30,7 @@ public abstract class MinecraftClientMixin {
 
         if(crosshairTarget.getType() == HitResult.Type.ENTITY) {
             Entity entity = ((EntityHitResult)crosshairTarget).getEntity();
-            if(AntiLootBlowUpClient.isCrystal(entity) && AntiLootBlowUpClient.cannotDestroy) {
+            if(AntiLootBlowUpClient.isCrystal(entity) && AntiLootBlowUpClient.cannotExplode()) {
                 cir.setReturnValue(false);
             }
         }
@@ -44,7 +44,7 @@ public abstract class MinecraftClientMixin {
 
         if (crosshairTarget.getType() == HitResult.Type.BLOCK && MinecraftClient.getInstance().world != null) {
             BlockState blockState = MinecraftClient.getInstance().world.getBlockState(((BlockHitResult)crosshairTarget).getBlockPos());
-            if(blockState.getBlock() instanceof RespawnAnchorBlock && blockState.get(RespawnAnchorBlock.CHARGES) > 0 && AntiLootBlowUpClient.cannotDestroy) {
+            if(blockState.getBlock() instanceof RespawnAnchorBlock && blockState.get(RespawnAnchorBlock.CHARGES) > 0 && AntiLootBlowUpClient.cannotExplode()) {
                 ci.cancel();
             }
         }

@@ -1,22 +1,20 @@
 package dev.hooman;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ToolItem;
 
 public class AntiLootBlowUpClient implements ClientModInitializer {
-	public static boolean cannotDestroy = false;
-	private long cooldown;
+	//public static boolean cannotDestroy = false;
+	//private long cooldown;
 
 	@Override
 	public void onInitializeClient() {
 
-		ClientTickEvents.START_CLIENT_TICK.register(client -> {
+		/*ClientTickEvents.START_CLIENT_TICK.register(client -> {
 			if (cannotDestroy && System.currentTimeMillis() - cooldown >= 2000) {
 				cannotDestroy = false;
 			}
@@ -29,7 +27,7 @@ public class AntiLootBlowUpClient implements ClientModInitializer {
 					cooldown = System.currentTimeMillis();
 				}
 			}
-		});
+		});*/
 	}
 
 	public static boolean isCrystal(Entity entity) {
@@ -41,5 +39,14 @@ public class AntiLootBlowUpClient implements ClientModInitializer {
 			return entity.getType().equals(EntityType.END_CRYSTAL);
 
 		return entity.getType().equals(EntityType.END_CRYSTAL) || entity.getType().equals(EntityType.SLIME) || entity.getType().equals(EntityType.MAGMA_CUBE);
+	}
+
+	public static boolean cannotExplode() {
+		if(MinecraftClient.getInstance().world != null && MinecraftClient.getInstance().player != null) {
+			return MinecraftClient.getInstance().world.getPlayers().stream()
+				.filter(e -> MinecraftClient.getInstance().player.squaredDistanceTo(e) <= 36)
+				.anyMatch(LivingEntity::isDead);
+		}
+		return false;
 	}
 }
