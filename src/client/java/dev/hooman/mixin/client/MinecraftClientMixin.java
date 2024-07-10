@@ -19,7 +19,7 @@ public class MinecraftClientMixin {
     public HitResult crosshairTarget;
 
     @Inject(method = "doAttack", at = @At("HEAD"), cancellable = true)
-    public void dontAttackCrystal(CallbackInfoReturnable<Boolean> cir) {
+    public void antilootblowup$dontAttackCrystal(CallbackInfoReturnable<Boolean> cir) {
         if(crosshairTarget == null) {
             LoggerFactory.getLogger("anti-loot-blow-up").error("crosshairTarget is null; this shouldn't happen!");
         }
