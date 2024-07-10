@@ -42,9 +42,8 @@ public abstract class MinecraftClientMixin {
             LoggerFactory.getLogger("anti-loot-blow-up").error("crosshairTarget is null; this shouldn't happen!");
         }
 
-        BlockHitResult blockHitResult = (BlockHitResult) crosshairTarget;
         if (crosshairTarget.getType() == HitResult.Type.BLOCK && MinecraftClient.getInstance().world != null) {
-            BlockState blockState = MinecraftClient.getInstance().world.getBlockState(blockHitResult.getBlockPos());
+            BlockState blockState = MinecraftClient.getInstance().world.getBlockState(((BlockHitResult)crosshairTarget).getBlockPos());
             if(blockState.getBlock() instanceof RespawnAnchorBlock && blockState.get(RespawnAnchorBlock.CHARGES) > 0 && AntiLootBlowUpClient.cannotDestroy) {
                 ci.cancel();
             }
