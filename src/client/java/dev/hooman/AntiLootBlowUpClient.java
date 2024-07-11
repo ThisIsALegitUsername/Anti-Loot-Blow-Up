@@ -4,7 +4,9 @@ import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
 
 public class AntiLootBlowUpClient implements ClientModInitializer {
@@ -43,10 +45,17 @@ public class AntiLootBlowUpClient implements ClientModInitializer {
 
 	public static boolean cannotExplode() {
 		if(MinecraftClient.getInstance().world != null && MinecraftClient.getInstance().player != null) {
-			return MinecraftClient.getInstance().world.getPlayers().stream()
-				.filter(e -> MinecraftClient.getInstance().player.squaredDistanceTo(e) <= 36)
-				.anyMatch(LivingEntity::isDead);
+			for(ItemEntity e : MinecraftClient.getInstance().world.getEntitiesByType(EntityType.ITEM, MinecraftClient.getInstance().player.getBoundingBox().expand(6), entity -> true)) {
+				ItemStack stack = e.getStack();
+				if(madeOfDiamondOrNetherite(stack)) {
+					return true;
+				}
+			}
 		}
 		return false;
 	}
+
+	public static boolean madeOfDiamondOrNetherite(ItemStack i) {
+        return i.getItem() instanceof ArmorItem && (i.getItem().getName().toString().toLowerCase().contains("diamond") || i.getItem().getName().toString().toLowerCase().contains("netherite"));
+    }
 }
