@@ -3,33 +3,25 @@
 	"id": "anti-loot-blow-up",
 	"version": "${version}",
 	"name": "Anti Loot Blow Up",
-	"description": "Disallows you from breaking crystals when a dead entity is nearby.",
+	"description": "Prevents you from using anchors and crystals to blow up loot",
 	"authors": [
-		"hooman"
+		"hooman23 (505cm)"
 	],
 	"license": "CC0-1.0",
 	"icon": "assets/anti-loot-blow-up/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"main": [],
-		"client": [
-			"dev.hooman.AntiLootBlowUpClient"
+		"main": [
+			"dev.hooman.AntiLootBlowUp"
 		]
 	},
 	"mixins": [
-		"anti-loot-blow-up.mixins.json",
-		{
-			"config": "anti-loot-blow-up.client.mixins.json",
-			"environment": "client"
-		}
+		"anti-loot-blow-up.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.15.11",
-		"minecraft": ">=1.20.1",
+		"minecraft": "~1.20.1",
 		"java": ">=17",
 		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
 	}
 }
