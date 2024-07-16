@@ -3,6 +3,7 @@ package dev.hooman.config;
 import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.BooleanControllerBuilder;
 import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
+import dev.isxander.yacl3.api.controller.FloatSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
@@ -32,7 +33,7 @@ public class CrystalUtilsConfig {
         HANDLER.save();
     }
 
-    public static CrystalUtilsConfig instance(){
+    public static CrystalUtilsConfig getInstance(){
         return HANDLER.instance();
     }
 
@@ -51,6 +52,18 @@ public class CrystalUtilsConfig {
     @SerialEntry
     public Integer detectionRadius = 6;
 
+    @SerialEntry
+    public boolean pearlSize = true;
+
+    @SerialEntry
+    public Float pearlScale = 2.0f;
+
+    @SerialEntry
+    public boolean playSound = true;
+
+    @SerialEntry
+    public boolean lit = true;
+
     public enum DetectionMode {
         Dead,
         Item
@@ -68,7 +81,7 @@ public class CrystalUtilsConfig {
         Both
     }
 
-    public Screen create(Screen parent) {
+    public Screen create(Screen parent, CrystalUtilsConfig instance) {
         return YetAnotherConfigLib.createBuilder()
                 .title(Text.of("CrystalUtilities CrystalUtilsConfig"))
                 .category(ConfigCategory.createBuilder()
@@ -80,35 +93,65 @@ public class CrystalUtilsConfig {
                                 .option(Option.<Boolean>createBuilder()
                                         .name(Text.of("Enabled"))
                                         .description(OptionDescription.of(Text.of("Whether or not this feature should be enabled")))
-                                        .binding(false, () -> CrystalUtilsConfig.instance().antiLootBlowupEnabled, (v) -> CrystalUtilsConfig.instance().antiLootBlowupEnabled = v)
+                                        .binding(false, () -> instance.antiLootBlowupEnabled, (v) -> instance.antiLootBlowupEnabled = v)
                                         .controller(opt -> BooleanControllerBuilder.create(opt).yesNoFormatter().coloured(true))
                                         .build()
                                 )
                                 .option(Option.<DetectionMode>createBuilder()
                                         .name(Text.of("Detection mode"))
                                         .description(OptionDescription.of(Text.of("How the mod decides there is loot nearby")))
-                                        .binding(DetectionMode.Item, () -> CrystalUtilsConfig.instance().detectionMode, (v) -> CrystalUtilsConfig.instance().detectionMode = v)
+                                        .binding(DetectionMode.Item, () -> instance.detectionMode, (v) -> instance.detectionMode = v)
                                         .controller(opt -> EnumControllerBuilder.create(opt).enumClass(DetectionMode.class))
                                         .build())
-                                .optionIf(CrystalUtilsConfig.instance().detectionMode == DetectionMode.Item,
-                                        Option.<ItemType>createBuilder()
+                                .option(Option.<ItemType>createBuilder()
                                         .name(Text.of("Item type"))
                                         .description(OptionDescription.of(Text.of("What type of item the mod should look for")))
-                                        .binding(ItemType.Armor, () -> CrystalUtilsConfig.instance().itemType, (v) -> CrystalUtilsConfig.instance().itemType = v)
+                                        .binding(ItemType.Armor, () -> instance.itemType, (v) -> instance.itemType = v)
                                         .controller(opt -> EnumControllerBuilder.create(opt).enumClass(ItemType.class))
                                         .build())
-                                .optionIf(CrystalUtilsConfig.instance().detectionMode == DetectionMode.Item,
-                                        Option.<Material>createBuilder()
+                                .option(Option.<Material>createBuilder()
                                         .name(Text.of("Material"))
                                         .description(OptionDescription.of(Text.of("What kinds of materials the mod should look for")))
-                                        .binding(Material.Both, () -> CrystalUtilsConfig.instance().material, (v) -> CrystalUtilsConfig.instance().material = v)
+                                        .binding(Material.Both, () -> instance.material, (v) -> instance.material = v)
                                         .controller(opt -> EnumControllerBuilder.create(opt).enumClass(Material.class))
                                         .build())
                                 .option(Option.<Integer>createBuilder()
                                         .name(Text.of("Detection radius"))
                                         .description(OptionDescription.of(Text.of("How far the mod should look when detecting loot nearby")))
-                                        .binding(6, () -> CrystalUtilsConfig.instance().detectionRadius, (v) -> CrystalUtilsConfig.instance().detectionRadius = v)
+                                        .binding(6, () -> instance.detectionRadius, (v) -> instance.detectionRadius = v)
                                         .controller(opt -> IntegerSliderControllerBuilder.create(opt).range(1, 32).step(1).formatValue(i -> Text.of(i + " Blocks")))
+                                        .build())
+                                .build())
+                        .build())
+                .category(ConfigCategory.createBuilder()
+                        .name(Text.of("Render"))
+                        .tooltip(Text.of("Rendering settings"))
+                        .group(OptionGroup.createBuilder()
+                                .name(Text.of("Pearls"))
+                                .description(OptionDescription.of(Text.of("Ender pearl settings")))
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.of("Enabled"))
+                                        .description(OptionDescription.of(Text.of("Whether or not this feature should be enabled")))
+                                        .binding(true, () -> instance.pearlSize, (v) -> instance.pearlSize = v)
+                                        .controller(opt -> BooleanControllerBuilder.create(opt).yesNoFormatter().coloured(true))
+                                        .build())
+                                .option(Option.<Float>createBuilder()
+                                        .name(Text.of("Scale"))
+                                        .description(OptionDescription.of(Text.of("How large the pearls should be")))
+                                        .binding(2.0f, () -> instance.pearlScale, (v) -> instance.pearlScale = v)
+                                        .controller(opt -> FloatSliderControllerBuilder.create(opt).range(0.1f, 5.0f).step(0.1f).formatValue(f -> Text.of(f + "x")))
+                                        .build())
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.of("Play sound"))
+                                        .description(OptionDescription.of(Text.of("Whether or not to play a sound when a pearl is thrown")))
+                                        .binding(true, () -> instance.playSound, (v) -> instance.playSound = v)
+                                        .controller(opt -> BooleanControllerBuilder.create(opt).yesNoFormatter().coloured(true))
+                                        .build())
+                                .option(Option.<Boolean>createBuilder()
+                                        .name(Text.of("Lit"))
+                                        .description(OptionDescription.of(Text.of("Whether or not the pearls should be lit")))
+                                        .binding(true, () -> instance.lit, (v) -> instance.lit = v)
+                                        .controller(opt -> BooleanControllerBuilder.create(opt).yesNoFormatter().coloured(true))
                                         .build())
                                 .build())
                         .build())

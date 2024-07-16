@@ -22,17 +22,17 @@ public class AntiLootBlowUp {
         return entity.getType().equals(EntityType.END_CRYSTAL) || entity.getType().equals(EntityType.SLIME) || entity.getType().equals(EntityType.MAGMA_CUBE);
     }
 
-    public static boolean cannotExplode() {
+    public static boolean cannotExplode(CrystalUtilsConfig instance) {
         if(MinecraftClient.getInstance().world != null && MinecraftClient.getInstance().player != null) {
-            switch (CrystalUtilsConfig.instance().detectionMode) {
+            switch (instance.detectionMode) {
                 case Dead:
                     return MinecraftClient.getInstance().world.getPlayers().stream()
-                            .filter(e -> MinecraftClient.getInstance().player.squaredDistanceTo(e) <= CrystalUtilsConfig.instance().detectionRadius * CrystalUtilsConfig.instance().detectionRadius)
+                            .filter(e -> MinecraftClient.getInstance().player.squaredDistanceTo(e) <= instance.detectionRadius * instance.detectionRadius)
                             .anyMatch(LivingEntity::isDead);
                 case Item:
-                    for (ItemEntity e : MinecraftClient.getInstance().world.getEntitiesByType(EntityType.ITEM, MinecraftClient.getInstance().player.getBoundingBox().expand(CrystalUtilsConfig.instance().detectionRadius), entity -> true)) {
+                    for (ItemEntity e : MinecraftClient.getInstance().world.getEntitiesByType(EntityType.ITEM, MinecraftClient.getInstance().player.getBoundingBox().expand(instance.detectionRadius), entity -> true)) {
                         ItemStack stack = e.getStack();
-                        if (cannotExplodeItem(stack)) {
+                        if (cannotExplodeItem(stack, instance)) {
                             return true;
                         }
                     }
@@ -48,14 +48,13 @@ public class AntiLootBlowUp {
         };
     }
 
-    public static boolean cannotExplodeItem(ItemStack i) {
+    public static boolean cannotExplodeItem(ItemStack i, CrystalUtilsConfig instance) {
         boolean diamond = i.getItem().getName().toString().toLowerCase().contains("diamond");
         boolean neth = i.getItem().getName().toString().toLowerCase().contains("netherite");
         boolean armor = i.getItem() instanceof ArmorItem;
         boolean tool = i.getItem() instanceof ToolItem;
-        CrystalUtilsConfig configInstance = CrystalUtilsConfig.instance();
-        CrystalUtilsConfig.Material material = configInstance.material;
-        CrystalUtilsConfig.ItemType itemType = configInstance.itemType;
+        CrystalUtilsConfig.Material material = instance.material;
+        CrystalUtilsConfig.ItemType itemType = instance.itemType;
 
         return switch (material) {
             case Diamond -> diamond && matchesItemType(itemType, armor, tool);

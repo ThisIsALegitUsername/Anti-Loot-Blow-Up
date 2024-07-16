@@ -29,9 +29,11 @@ public abstract class MinecraftClientMixin {
 			CrystalUtilities.LOGGER.error("crosshairTarget is null; this shouldn't happen!");
 		}
 
-		if(crosshairTarget.getType() == HitResult.Type.ENTITY && CrystalUtilsConfig.instance().antiLootBlowupEnabled) {
+		CrystalUtilsConfig instance = CrystalUtilsConfig.getInstance();
+
+		if(crosshairTarget.getType() == HitResult.Type.ENTITY && instance.antiLootBlowupEnabled) {
 			Entity entity = ((EntityHitResult)crosshairTarget).getEntity();
-			if(AntiLootBlowUp.isCrystal(entity) && AntiLootBlowUp.cannotExplode()) {
+			if(AntiLootBlowUp.isCrystal(entity) && AntiLootBlowUp.cannotExplode(instance)) {
 				cir.setReturnValue(false);
 			}
 		}
@@ -39,13 +41,16 @@ public abstract class MinecraftClientMixin {
 
 	@Inject(method = "doItemUse()V", at = @At("HEAD"), cancellable = true)
 	public void crystalutilities$dontBlowAnchor(CallbackInfo ci) {
+
+		CrystalUtilsConfig instance = CrystalUtilsConfig.getInstance();
+
 		if (crosshairTarget == null) {
 			CrystalUtilities.LOGGER.error("crosshairTarget is null; this shouldn't happen!");
 		}
 
-		if (crosshairTarget.getType() == HitResult.Type.BLOCK && MinecraftClient.getInstance().world != null && CrystalUtilsConfig.instance().antiLootBlowupEnabled) {
+		if (crosshairTarget.getType() == HitResult.Type.BLOCK && MinecraftClient.getInstance().world != null && instance.antiLootBlowupEnabled) {
 			BlockState blockState = MinecraftClient.getInstance().world.getBlockState(((BlockHitResult)crosshairTarget).getBlockPos());
-			if(blockState.getBlock() instanceof RespawnAnchorBlock && blockState.get(RespawnAnchorBlock.CHARGES) > 0 && AntiLootBlowUp.cannotExplode()) {
+			if(blockState.getBlock() instanceof RespawnAnchorBlock && blockState.get(RespawnAnchorBlock.CHARGES) > 0 && AntiLootBlowUp.cannotExplode(instance)) {
 				ci.cancel();
 			}
 		}
