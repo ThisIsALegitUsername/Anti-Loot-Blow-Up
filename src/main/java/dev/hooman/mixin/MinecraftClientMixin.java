@@ -29,7 +29,7 @@ public abstract class MinecraftClientMixin {
 			CrystalUtilities.LOGGER.error("crosshairTarget is null; this shouldn't happen!");
 		}
 
-		CrystalUtilsConfig instance = CrystalUtilsConfig.getInstance();
+		CrystalUtilsConfig instance = CrystalUtilities.configInstance;
 
 		if(crosshairTarget.getType() == HitResult.Type.ENTITY && instance.antiLootBlowupEnabled) {
 			Entity entity = ((EntityHitResult)crosshairTarget).getEntity();
@@ -42,7 +42,7 @@ public abstract class MinecraftClientMixin {
 	@Inject(method = "doItemUse()V", at = @At("HEAD"), cancellable = true)
 	public void crystalutilities$dontBlowAnchor(CallbackInfo ci) {
 
-		CrystalUtilsConfig instance = CrystalUtilsConfig.getInstance();
+		CrystalUtilsConfig instance = CrystalUtilities.configInstance;
 
 		if (crosshairTarget == null) {
 			CrystalUtilities.LOGGER.error("crosshairTarget is null; this shouldn't happen!");

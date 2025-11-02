@@ -9,6 +9,7 @@ import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -21,7 +22,6 @@ public class CrystalUtilsConfig {
             .id(new Identifier("crystal-utilities", "config"))
             .serializer(config -> GsonConfigSerializerBuilder.create(config)
                     .setPath(CONFIG_PATH)
-                    //.setJson5(true) // Uncomment this line to use JSON5 instead of JSON.
                     .build())
             .build();
 
@@ -158,5 +158,13 @@ public class CrystalUtilsConfig {
                 .save(CrystalUtilsConfig::save)
                 .build()
                 .generateScreen(parent);
+    }
+
+    public static boolean isDiamond(ItemStack i) {
+        return i.getItem().getName().toString().toLowerCase().contains("diamond");
+    }
+
+    public static boolean isNetherite(ItemStack i) {
+        return i.getItem().getName().toString().toLowerCase().contains("netherite");
     }
 }

@@ -8,10 +8,13 @@ import org.slf4j.LoggerFactory;
 public class CrystalUtilities implements ModInitializer {
 
 	public static Logger LOGGER = LoggerFactory.getLogger("crystal-utilities");
+	public static CrystalUtilsConfig configInstance;
+
 	@Override
 	public void onInitialize() {
 		LOGGER.info("Loading CrystalUtilities CrystalUtilsConfig");
 		CrystalUtilsConfig.load();
+		configInstance = CrystalUtilsConfig.getInstance();
 	}
 
 }

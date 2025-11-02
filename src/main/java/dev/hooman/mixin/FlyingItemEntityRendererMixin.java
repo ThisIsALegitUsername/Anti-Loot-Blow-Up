@@ -1,5 +1,6 @@
 package dev.hooman.mixin;
 
+import dev.hooman.CrystalUtilities;
 import dev.hooman.config.CrystalUtilsConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -33,7 +34,7 @@ public abstract class FlyingItemEntityRendererMixin<T extends Entity> {
     @Inject(method = "render", at = @At("TAIL"))
     public void updated(T entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci){
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        CrystalUtilsConfig instance = CrystalUtilsConfig.getInstance();
+        CrystalUtilsConfig instance = CrystalUtilities.configInstance;
         if(instance.pearlSize && entity instanceof EnderPearlEntity){
             this.scale = instance.pearlScale;
             this.lit = instance.lit;

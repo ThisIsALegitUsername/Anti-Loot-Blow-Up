@@ -40,7 +40,8 @@ public class AntiLootBlowUp {
         }
         return false;
     }
-    private static boolean matchesItemType(CrystalUtilsConfig.ItemType itemType, boolean armor, boolean tool) {
+
+    public static boolean matchesItemType(CrystalUtilsConfig.ItemType itemType, boolean armor, boolean tool) {
         return switch (itemType) {
             case Armor -> armor;
             case Tool -> tool;
@@ -49,8 +50,8 @@ public class AntiLootBlowUp {
     }
 
     public static boolean cannotExplodeItem(ItemStack i, CrystalUtilsConfig instance) {
-        boolean diamond = i.getItem().getName().toString().toLowerCase().contains("diamond");
-        boolean neth = i.getItem().getName().toString().toLowerCase().contains("netherite");
+        boolean diamond = CrystalUtilsConfig.isDiamond(i);
+        boolean neth = CrystalUtilsConfig.isNetherite(i);
         boolean armor = i.getItem() instanceof ArmorItem;
         boolean tool = i.getItem() instanceof ToolItem;
         CrystalUtilsConfig.Material material = instance.material;
